@@ -1,0 +1,22 @@
+# System
+.DS_Store
+
+# Swift
+.build
+.cache
+/Packages
+/*.xcodeproj
+xcuserdata
+
+# Python
+*.pyc
+.idea
+.cache
+__pycache__
+.pytest_cache
+venv
+.python-version
+
+# Utility
+*.ignored*
+tempfolder
