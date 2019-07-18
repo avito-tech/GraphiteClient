@@ -9,12 +9,13 @@ public class AtomicValue<T> {
         self.value = value
     }
     
-    public func withExclusiveAccess(work: (inout T) throws -> ()) rethrows -> T {
+    @discardableResult
+    public func withExclusiveAccess<R>(work: (inout T) throws -> (R)) rethrows -> R {
         lock.lock()
         defer { lock.unlock() }
-        try work(&value)
+        let result = try work(&value)
         didUpdateValue()
-        return value
+        return result
     }
     
     public func currentValue() -> T {
