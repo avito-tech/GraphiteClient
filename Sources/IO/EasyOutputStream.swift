@@ -99,7 +99,7 @@ public final class EasyOutputStream: NSObject, StreamDelegate {
         
         guard !data.isEmpty else { return }
         
-        _ = buffer.withExclusiveAccess { bytes in
+        buffer.withExclusiveAccess { bytes in
             bytes.append(data)
         }
         
@@ -151,16 +151,15 @@ public final class EasyOutputStream: NSObject, StreamDelegate {
     /// Writes data and returns a number of bytes written. Should be called when stream has some space available.
     @discardableResult
     private func writeBufferedData(outputStream: OutputStream, numberOfBytes: Int) -> Int {
-        var bytesWritten = 0
-        _ = buffer.withExclusiveAccess { data in
-            bytesWritten = data.withUnsafeBytes { bytes -> Int in
+        return buffer.withExclusiveAccess { data in
+            let bytesWritten = data.withUnsafeBytes { bytes -> Int in
                 outputStream.write(bytes, maxLength: min(numberOfBytes, data.count))
             }
             if bytesWritten > 0 {
                 data = data.dropFirst(bytesWritten)
             }
+            return bytesWritten
         }
-        return bytesWritten
     }
     
     private func writeDataOnDelegateEvent(outputStream: OutputStream) {
